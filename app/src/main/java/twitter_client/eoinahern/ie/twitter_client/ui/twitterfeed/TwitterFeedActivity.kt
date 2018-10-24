@@ -9,5 +9,7 @@ class TwitterFeedActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_twitter_feed)
+
+        println(twitter_client.eoinahern.ie.twitter_client.BuildConfig.apikey)
     }
 }
