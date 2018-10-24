@@ -10,6 +10,7 @@ class TwitterFeedActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_twitter_feed)
 
-        println(twitter_client.eoinahern.ie.twitter_client.BuildConfig.apikey)
+        println(twitter_client.eoinahern.ie.twitter_client.BuildConfig.oauth_consumer_key)
+        println(twitter_client.eoinahern.ie.twitter_client.BuildConfig.oauth_token)
     }
 }

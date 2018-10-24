@@ -19,7 +19,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "apikey", twitterApiProperties["apikey"])
+        buildConfigField("String", "oauth_consumer_key", twitterApiProperties["oauth_consumer_key"])
+        buildConfigField("String", "oauth_token", twitterApiProperties["oauth_token"])
     }
     buildTypes {
         release {
