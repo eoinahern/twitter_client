@@ -9,6 +9,7 @@ import java.util.*
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import javax.inject.Inject
+import okio.Buffer
 
 
 class OauthInterceptor @Inject constructor(
@@ -24,8 +25,9 @@ class OauthInterceptor @Inject constructor(
     private val OAUTH_VERSION = "oauth_version"
     private val OAUTH_VERSION_VALUE = "1.0"
     private val OAUTH_SIGNATURE = "oauth_signature"
+    private val SIGNING_ALGO = "HmacSHA1"
 
-    private val consumerKeyValue: String = twitter_client.eoinahern.ie.twitter_client.BuildConfig.oauth_consumer_key
+    private val consumerKey: String = twitter_client.eoinahern.ie.twitter_client.BuildConfig.oauth_consumer_key
     private val consumerSecret = twitter_client.eoinahern.ie.twitter_client.BuildConfig.oauth_consumer_secret
     private val accessToken: String = twitter_client.eoinahern.ie.twitter_client.BuildConfig.oauth_access_token
     private val accessSecret: String = twitter_client.eoinahern.ie.twitter_client.BuildConfig.oauth_access_secret
@@ -34,28 +36,62 @@ class OauthInterceptor @Inject constructor(
         return chain.proceed(signRequest(chain.request()))
     }
 
-    fun signRequest(request: Request): Request {
+    private fun signRequest(request: Request): Request {
 
+        val params: SortedMap<String, String> = TreeMap()
 
-        var params: SortedMap<String, String> = TreeMap()
+        val consumerKeyValue = urlEscaper.escape(consumerKey)
+        val accessTokenValue = urlEscaper.escape(accessToken)
+        val nonceValue = buildNonce()
+        val timeStampValue = buildDateTime()
 
-        params.put()
-        params.put()
-        params.put()
-        params.put()
-        params.put()
+        params[OAUTH_CONSUMER_KEY] = consumerKeyValue
+        params[OAUTH_ACCESS_TOKEN] = accessTokenValue
+        params[OAUTH_NONCE] = nonceValue
+        params[OAUTH_TIMESTAMP] = timeStampValue
+        params[OAUTH_SIGNATURE_METHOD] = OAUTH_SIGNATURE_METHOD_VALUE
+        params[OAUTH_VERSION] = OAUTH_VERSION_VALUE
 
-        var mac: Mac
-        var spec: SecretKeySpec()
+        val url = request.url()
+        for (i in 0 until url.querySize()) {
+            params[urlEscaper.escape(url.queryParameterName(i))] = urlEscaper.escape(url.queryParameterValue(i))
+        }
+
+        val base = Buffer()
+        val method = request.method()
+        base.writeUtf8(method)
+        base.writeUtf8("&")
+        base.writeUtf8(urlEscaper.escape(request.url().newBuilder().query(null).build().toString()))
+
+        for ((key, value) in params) {
+            base.writeUtf8("&")
+            base.writeUtf8(urlEscaper.escape(key))
+            base.writeUtf8(urlEscaper.escape("="))
+            base.writeUtf8(urlEscaper.escape(value))
+        }
+
+        val signingKey = urlEscaper.escape(consumerSecret).plus("&").plus(urlEscaper.escape(accessSecret))
+
+        val keySpec = SecretKeySpec(signingKey.toByteArray(), SIGNING_ALGO)
+        val mac: Mac
+        try {
+            mac = Mac.getInstance(SIGNING_ALGO)
+            mac.init(keySpec)
+        } catch (e: Exception) {
+            throw Exception(e)
+        }
+
+        val result = mac.doFinal(base.readByteArray())
+        val signature = ByteString.of(*result).base64()
 
 
         val authStr = "OAuth ".plus(OAUTH_CONSUMER_KEY).plus("=\"$consumerKeyValue\",")
-            .plus(OAUTH_ACCESS_TOKEN).plus("=\"$accessToken\",")
+            .plus(OAUTH_ACCESS_TOKEN).plus("=\"$accessTokenValue\",")
             .plus(OAUTH_SIGNATURE_METHOD).plus("=\"$OAUTH_SIGNATURE_METHOD_VALUE\",")
             .plus(OAUTH_VERSION).plus("=\"$OAUTH_VERSION_VALUE\",")
-            .plus(OAUTH_TIMESTAMP).plus("=\"${buildDateTime()}\",")
-            .plus(OAUTH_NONCE).plus("=\"${buildNonce()}\",")
-            .plus(OAUTH_SIGNATURE).plus("=\"${buildSignature(request)}\"")
+            .plus(OAUTH_TIMESTAMP).plus("=\"$timeStampValue\",")
+            .plus(OAUTH_NONCE).plus("=\"$nonceValue\",")
+            .plus(OAUTH_SIGNATURE).plus("=\"${urlEscaper.escape(signature)}\"")
 
         return request.newBuilder()
             .addHeader("Authorization", authStr)
@@ -63,23 +99,9 @@ class OauthInterceptor @Inject constructor(
 
     }
 
-
-    // return oauth signature
-    private fun buildSignature(request: Request): String {
-
-
-        val str = request.method()
-
-
-
-        return str
-    }
-
     private fun buildDateTime() = (System.currentTimeMillis() / 1000).toString()
 
-
     private fun buildNonce(): String {
-
         val nonce = ByteArray(32)
         random.nextBytes(nonce)
         return ByteString.of(nonce, 0, nonce.size).base64().replace("\\W", "")
