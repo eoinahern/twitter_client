@@ -10,9 +10,10 @@ class TwitterFeedViewModelProvider @Inject constructor(private val viewModel: Tw
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
 
+        if (modelClass.isAssignableFrom(TwitterFeedViewModel::class.java)) {
+            return viewModel as T
+        }
 
         throw IllegalStateException("unknown viewmodel class")
     }
-
-
 }

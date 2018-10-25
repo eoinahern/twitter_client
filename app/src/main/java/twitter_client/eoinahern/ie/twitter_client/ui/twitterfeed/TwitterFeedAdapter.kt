@@ -8,8 +8,9 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.tweet_item_layout.*
 import twitter_client.eoinahern.ie.twitter_client.R
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
+import javax.inject.Inject
 
-class TwitterFeedAdapter : RecyclerView.Adapter<TwitterFeedAdapter.ViewHolder>() {
+class TwitterFeedAdapter @Inject constructor() : RecyclerView.Adapter<TwitterFeedAdapter.ViewHolder>() {
 
     private val list: List<Tweet> = mutableListOf()
 
@@ -28,6 +29,14 @@ class TwitterFeedAdapter : RecyclerView.Adapter<TwitterFeedAdapter.ViewHolder>()
     }
 
     fun updateList() {
+
+    }
+
+    fun appendToList() {
+
+    }
+
+    fun deleteFromList() {
 
     }
 
