@@ -60,3 +60,7 @@ dependencies {
     api 'com.google.guava:guava:27.0-android'
 
 }
+
+androidExtensions {
+    experimental = true
+}

@@ -7,7 +7,7 @@ import retrofit2.http.Streaming
 
 interface TwitterApi {
 
-    @GET
+    @GET("filter.json")
     @Streaming
-    fun getTweets() : Call<ResponseBody>
+    fun getTweets(): Call<ResponseBody>
 }
