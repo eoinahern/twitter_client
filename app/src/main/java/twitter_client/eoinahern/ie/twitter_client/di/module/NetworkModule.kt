@@ -1,4 +1,4 @@
-package twitter_client.eoinahern.ie.twitter_client.di
+package twitter_client.eoinahern.ie.twitter_client.di.module
 
 import com.google.common.escape.Escaper
 import dagger.Module
