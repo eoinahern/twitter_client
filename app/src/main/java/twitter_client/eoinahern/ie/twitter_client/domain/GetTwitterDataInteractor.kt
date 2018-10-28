@@ -1,14 +1,18 @@
 package twitter_client.eoinahern.ie.twitter_client.domain
 
 import io.reactivex.Observable
-import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
+import twitter_client.eoinahern.ie.twitter_client.data.api.TwitterApi
+import twitter_client.eoinahern.ie.twitter_client.di.PerScreen
+import javax.inject.Inject
 
+@PerScreen
+class GetTwitterDataInteractor @Inject constructor(private val twitterApi: TwitterApi) : BaseInteractor<String>() {
 
-class GetTwitterDataInteractor : BaseInteractor<List<Tweet>>() {
+    override fun buildObservable(): Observable<String> {
 
-    override fun buildObservable(): Observable<List<Tweet>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Observable.fromCallable {
+            val call = twitterApi.getTweets("eoin")
+             call.execute().body()?.string()
+        }
     }
-
-
 }

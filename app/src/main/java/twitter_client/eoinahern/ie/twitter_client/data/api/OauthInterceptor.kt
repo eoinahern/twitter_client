@@ -4,12 +4,14 @@ import com.google.common.escape.Escaper
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-import okio.ByteString
 import java.util.*
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import javax.inject.Inject
 import okio.Buffer
+import okio.ByteString
+import android.util.Base64
+import okhttp3.RequestBody
 
 
 class OauthInterceptor @Inject constructor(
@@ -62,9 +64,12 @@ class OauthInterceptor @Inject constructor(
         base.writeUtf8(method)
         base.writeUtf8("&")
         base.writeUtf8(urlEscaper.escape(request.url().newBuilder().query(null).build().toString()))
+        base.writeUtf8("&")
 
+        var first = true
         for ((key, value) in params) {
-            base.writeUtf8("&")
+            if (!first) base.writeUtf8(urlEscaper.escape("&"))
+            first = false
             base.writeUtf8(urlEscaper.escape(key))
             base.writeUtf8(urlEscaper.escape("="))
             base.writeUtf8(urlEscaper.escape(value))
@@ -82,28 +87,27 @@ class OauthInterceptor @Inject constructor(
         }
 
         val result = mac.doFinal(base.readByteArray())
-        val signature = ByteString.of(*result).base64()
+        val signature = Base64.encodeToString(result, Base64.NO_WRAP)
 
 
-        val authStr = "OAuth ".plus(OAUTH_CONSUMER_KEY).plus("=\"$consumerKeyValue\",")
-            .plus(OAUTH_ACCESS_TOKEN).plus("=\"$accessTokenValue\",")
-            .plus(OAUTH_SIGNATURE_METHOD).plus("=\"$OAUTH_SIGNATURE_METHOD_VALUE\",")
-            .plus(OAUTH_VERSION).plus("=\"$OAUTH_VERSION_VALUE\",")
-            .plus(OAUTH_TIMESTAMP).plus("=\"$timeStampValue\",")
-            .plus(OAUTH_NONCE).plus("=\"$nonceValue\",")
+        val authStr = "OAuth ".plus(OAUTH_CONSUMER_KEY).plus("=\"$consumerKeyValue\", ")
+            .plus(OAUTH_ACCESS_TOKEN).plus("=\"$accessTokenValue\", ")
+            .plus(OAUTH_SIGNATURE_METHOD).plus("=\"$OAUTH_SIGNATURE_METHOD_VALUE\", ")
+            .plus(OAUTH_TIMESTAMP).plus("=\"$timeStampValue\", ")
+            .plus(OAUTH_NONCE).plus("=\"$nonceValue\", ")
+            .plus(OAUTH_VERSION).plus("=\"$OAUTH_VERSION_VALUE\", ")
             .plus(OAUTH_SIGNATURE).plus("=\"${urlEscaper.escape(signature)}\"")
 
-        return request.newBuilder()
-            .addHeader("Authorization", authStr)
-            .build()
+
+        println(authStr)
+        return request.newBuilder().addHeader("Authorization", authStr).build()
 
     }
 
-    private fun buildDateTime() = (System.currentTimeMillis() / 1000).toString()
+    private fun buildDateTime() = (System.currentTimeMillis() / 1000L).toString()
 
     private fun buildNonce(): String {
-        val nonce = ByteArray(32)
-        random.nextBytes(nonce)
-        return ByteString.of(nonce, 0, nonce.size).base64().replace("\\W", "")
+        return UUID.randomUUID().toString().replace("-", "").substring(0, 32)
+
     }
 }
