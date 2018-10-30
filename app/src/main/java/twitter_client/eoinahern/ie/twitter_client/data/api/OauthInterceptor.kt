@@ -9,9 +9,7 @@ import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import javax.inject.Inject
 import okio.Buffer
-import okio.ByteString
 import android.util.Base64
-import okhttp3.RequestBody
 
 
 class OauthInterceptor @Inject constructor(
@@ -106,8 +104,6 @@ class OauthInterceptor @Inject constructor(
 
     private fun buildDateTime() = (System.currentTimeMillis() / 1000L).toString()
 
-    private fun buildNonce(): String {
-        return UUID.randomUUID().toString().replace("-", "").substring(0, 32)
+    private fun buildNonce(): String = UUID.randomUUID().toString().replace("-", "").substring(0, 32)
 
-    }
 }

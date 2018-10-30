@@ -36,7 +36,8 @@ dependencies {
 
     def room_version = "2.1.0-alpha01"
     def dagger_version = "2.16"
-    def LIFECYCLE_VERSION= "2.0.0"
+    def LIFECYCLE_VERSION = "2.0.0"
+    def retrofit_version = "2.4.0"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -51,10 +52,11 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-rxjava2:$room_version"
 
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.13'
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
 
     compileOnly 'javax.annotation:jsr250-api:1.0'
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
@@ -65,6 +67,8 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-extensions:$LIFECYCLE_VERSION"
     kapt "androidx.lifecycle:lifecycle-compiler:$LIFECYCLE_VERSION"
+
+    implementation 'com.google.code.gson:gson:2.8.5'
 
 }
 

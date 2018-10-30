@@ -14,7 +14,7 @@ import javax.inject.Inject
 @PerScreen
 class TwitterFeedAdapter @Inject constructor() : RecyclerView.Adapter<TwitterFeedAdapter.ViewHolder>() {
 
-    private val list: List<Tweet> = mutableListOf()
+    private val list: MutableList<Tweet> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -26,12 +26,22 @@ class TwitterFeedAdapter @Inject constructor() : RecyclerView.Adapter<TwitterFee
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val tweet = list[position]
-        holder.nameTxt.text = tweet.name
-        holder.tweetTxt.text = tweet.message
+        holder.nameTxt.text = tweet.user.name
+        holder.tweetTxt.text = tweet.text
     }
 
-    fun updateList() {
+    fun updateList(listIn: List<Tweet>) {
 
+        if (list.isEmpty()) {
+            list.addAll(listIn)
+            notifyItemRangeInserted(0, listIn.size)
+            return
+        } else {
+
+            val currentInt = list.size
+            list.addAll(listIn)
+            notifyItemRangeInserted(currentInt, listIn.size)
+        }
     }
 
     fun appendToList() {

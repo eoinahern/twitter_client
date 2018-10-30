@@ -3,6 +3,7 @@ package twitter_client.eoinahern.ie.twitter_client.di.module
 import android.content.Context
 import com.google.common.escape.Escaper
 import com.google.common.net.UrlEscapers
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import twitter_client.eoinahern.ie.twitter_client.TwitterApp
@@ -29,5 +30,9 @@ class AppModule constructor(private val app: TwitterApp) {
     fun getUrlEscaper(): Escaper {
         return UrlEscapers.urlFormParameterEscaper()
     }
+
+    @Singleton
+    @Provides
+    fun getGson(): Gson = Gson()
 
 }

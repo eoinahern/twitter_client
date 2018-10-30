@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_twitter_feed.*
 import twitter_client.eoinahern.ie.twitter_client.R
+import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
 import javax.inject.Inject
 
 class TwitterFeedActivity : AppCompatActivity() {
@@ -40,10 +41,11 @@ class TwitterFeedActivity : AppCompatActivity() {
             .get(TwitterFeedViewModel::class.java)
 
         viewModel.getData().observe(this,
-            Observer<String> {
-                println(it)
+            Observer<List<Tweet>> { list ->
+                adapter.updateList(list)
             })
     }
+
 
     private fun showLoading() {
 
