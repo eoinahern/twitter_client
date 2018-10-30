@@ -1,6 +1,5 @@
 package twitter_client.eoinahern.ie.twitter_client.ui.twitterfeed
 
-import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,7 +18,6 @@ class TwitterFeedViewModel @Inject constructor(private val getTwitterDataInterac
 
     private val tweetList: MutableLiveData<List<Tweet>> = MutableLiveData()
     private val errorStr: MutableLiveData<String> = MutableLiveData()
-    private lateinit var disp: Disposable
 
     fun getData(): LiveData<List<Tweet>> {
         return tweetList
@@ -34,7 +32,7 @@ class TwitterFeedViewModel @Inject constructor(private val getTwitterDataInterac
             }
 
             override fun onSubscribe(d: Disposable) {
-
+                getTwitterDataInteractor.addDisposable(d)
             }
 
             override fun onNext(t: List<Tweet>) {
@@ -53,7 +51,7 @@ class TwitterFeedViewModel @Inject constructor(private val getTwitterDataInterac
     }
 
     fun onUnsunscribe() {
-        disp.dispose()
+        getTwitterDataInteractor.unsubscribe()
     }
 
 }
