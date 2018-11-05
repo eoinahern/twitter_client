@@ -26,7 +26,7 @@
                     android:layout_marginLeft="0dp"
                     android:focusable="false"
                     android:iconifiedByDefault="false"
-                    android:queryHint="enter search term"/>
+                    android:queryHint="@string/enter_term"/>
 
         </RelativeLayout>
 

@@ -6,11 +6,13 @@ import android.view.View
 import androidx.lifecycle.Observer
 import dagger.android.AndroidInjection
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_twitter_feed.*
 import twitter_client.eoinahern.ie.twitter_client.R
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
 import javax.inject.Inject
+
 
 class TwitterFeedActivity : AppCompatActivity() {
 
@@ -30,7 +32,7 @@ class TwitterFeedActivity : AppCompatActivity() {
         initAdapter()
         initViewModel()
         showLoading()
-        searchView.isSubmitButtonEnabled = true
+        setUpSearchView()
         viewModel.getTwitterFeed()
     }
 
@@ -41,6 +43,7 @@ class TwitterFeedActivity : AppCompatActivity() {
 
     private fun initAdapter() {
         recycler.layoutManager = LinearLayoutManager(this)
+        recycler.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         recycler.adapter = adapter
     }
 
@@ -53,6 +56,11 @@ class TwitterFeedActivity : AppCompatActivity() {
                 hideLoading()
                 adapter.updateList(list)
             })
+    }
+
+    private fun setUpSearchView() {
+        searchView.isSubmitButtonEnabled = true
+
     }
 
 

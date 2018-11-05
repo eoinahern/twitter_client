@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Twitter_Client</string>
     <string name="loading_txt">loading!</string>
+    <string name="enter_term">enter search term</string>
 </resources>
