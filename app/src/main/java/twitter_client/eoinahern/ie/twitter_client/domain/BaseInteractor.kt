@@ -29,6 +29,4 @@ abstract class BaseInteractor<T> {
     fun unsubscribe() {
         compositeDisposable.clear()
     }
-
-
 }

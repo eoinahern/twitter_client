@@ -75,10 +75,14 @@ class GetTwitterDataInteractor @Inject constructor(private val twitterApi: Twitt
                 }
             } catch (e: Throwable) {
                 e.printStackTrace()
-                subscriber.onError(e)
+
+                if (!subscriber.isDisposed)
+                    subscriber.onError(e)
             }
 
-            subscriber.onComplete()
+
+            if (!subscriber.isDisposed)
+                subscriber.onComplete()
         }
     }
 

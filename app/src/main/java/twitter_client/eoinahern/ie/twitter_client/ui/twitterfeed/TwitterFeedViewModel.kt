@@ -17,7 +17,7 @@ class TwitterFeedViewModel @Inject constructor(private val getTwitterDataInterac
     ViewModel() {
 
     private val tweetList: MutableLiveData<List<Tweet>> = MutableLiveData()
-    private val errorStr: MutableLiveData<String> = MutableLiveData()
+    //private val errorStr: MutableLiveData<String> = MutableLiveData()
 
     fun getData(): LiveData<List<Tweet>> {
         return tweetList
@@ -33,6 +33,7 @@ class TwitterFeedViewModel @Inject constructor(private val getTwitterDataInterac
 
             override fun onSubscribe(d: Disposable) {
                 getTwitterDataInteractor.addDisposable(d)
+
             }
 
             override fun onNext(t: List<Tweet>) {
@@ -48,10 +49,10 @@ class TwitterFeedViewModel @Inject constructor(private val getTwitterDataInterac
                 e.printStackTrace()
             }
         })
+
     }
 
-    fun onUnsunscribe() {
+    fun unsubscribe() {
         getTwitterDataInteractor.unsubscribe()
     }
-
 }

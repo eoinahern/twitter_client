@@ -2,6 +2,7 @@ package twitter_client.eoinahern.ie.twitter_client.ui.twitterfeed
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import dagger.android.AndroidInjection
 import androidx.lifecycle.ViewModelProviders
@@ -25,15 +26,22 @@ class TwitterFeedActivity : AppCompatActivity() {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_twitter_feed)
+        setUpToolbar()
         initAdapter()
         initViewModel()
+        showLoading()
+        searchView.isSubmitButtonEnabled = true
         viewModel.getTwitterFeed()
+    }
+
+    private fun setUpToolbar() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setIcon(R.drawable.ic_twitter)
     }
 
     private fun initAdapter() {
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
-
     }
 
     private fun initViewModel() {
@@ -42,16 +50,20 @@ class TwitterFeedActivity : AppCompatActivity() {
 
         viewModel.getData().observe(this,
             Observer<List<Tweet>> { list ->
+                hideLoading()
                 adapter.updateList(list)
             })
     }
 
 
     private fun showLoading() {
-
+        recycler.visibility = View.GONE
+        loading.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-
+        recycler.visibility = View.VISIBLE
+        loading.visibility = View.GONE
     }
+
 }
