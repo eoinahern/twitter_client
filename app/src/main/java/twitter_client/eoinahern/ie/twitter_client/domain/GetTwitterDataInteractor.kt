@@ -8,6 +8,7 @@ import twitter_client.eoinahern.ie.twitter_client.data.api.TwitterApi
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
 import twitter_client.eoinahern.ie.twitter_client.data.model.User
 import twitter_client.eoinahern.ie.twitter_client.di.PerScreen
+import twitter_client.eoinahern.ie.twitter_client.tools.DEFAULT_SEARCH
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import javax.inject.Inject
@@ -26,6 +27,10 @@ class GetTwitterDataInteractor @Inject constructor(private val twitterApi: Twitt
     }
 
     override fun buildObservable(): Observable<List<Tweet>> {
+
+        if (searchTerm.isBlank())
+            searchTerm = DEFAULT_SEARCH
+
         return twitterApi.getTweets(searchTerm).flatMap {
             events(it.source())
         }
@@ -33,12 +38,11 @@ class GetTwitterDataInteractor @Inject constructor(private val twitterApi: Twitt
 
     private fun events(buffSource: BufferedSource): Observable<List<Tweet>> {
 
-        return Observable.create<List<Tweet>> { subscriber ->
+        return Observable.create<Tweet> { subscriber ->
             try {
 
                 val jsonReader = JsonReader(InputStreamReader(buffSource.inputStream(), "UTF-8"))
                 jsonReader.isLenient = true
-                var tweetList: MutableList<Tweet> = mutableListOf()
                 var textIn = ""
                 var userIn = User("")
 
@@ -66,12 +70,7 @@ class GetTwitterDataInteractor @Inject constructor(private val twitterApi: Twitt
                     }
 
                     val tweet = Tweet(text = textIn, user = userIn)
-                    tweetList.add(tweet)
-
-                    if (tweetList.size == 15) {
-                        subscriber.onNext(tweetList)
-                        tweetList.clear()
-                    }
+                    subscriber.onNext(tweet)
                 }
             } catch (e: Throwable) {
                 e.printStackTrace()
@@ -80,10 +79,9 @@ class GetTwitterDataInteractor @Inject constructor(private val twitterApi: Twitt
                     subscriber.onError(e)
             }
 
-
             if (!subscriber.isDisposed)
                 subscriber.onComplete()
-        }
+        }.buffer(5)
     }
 
     private fun createUser(jsonReader: JsonReader): User {

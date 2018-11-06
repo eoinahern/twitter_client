@@ -2,4 +2,5 @@
     <string name="app_name">Twitter_Client</string>
     <string name="loading_txt">loading!</string>
     <string name="enter_term">enter search term</string>
+    <string name="error_loading">error loading!</string>
 </resources>

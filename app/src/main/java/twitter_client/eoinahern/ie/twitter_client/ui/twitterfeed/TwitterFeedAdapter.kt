@@ -44,12 +44,10 @@ class TwitterFeedAdapter @Inject constructor() : RecyclerView.Adapter<TwitterFee
         }
     }
 
-    fun appendToList() {
-
-    }
-
     fun deleteFromList() {
-
+        val currentSize = itemCount
+        list.clear()
+        notifyItemRangeRemoved(0, currentSize)
     }
 
 

@@ -12,7 +12,8 @@
             android:supportsRtl="true"
             android:name=".TwitterApp"
             android:theme="@style/AppTheme">
-        <activity android:name=".ui.twitterfeed.TwitterFeedActivity">
+        <activity android:name=".ui.twitterfeed.TwitterFeedActivity"
+                  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

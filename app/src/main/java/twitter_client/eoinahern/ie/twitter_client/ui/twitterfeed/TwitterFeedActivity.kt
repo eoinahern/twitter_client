@@ -3,6 +3,7 @@ package twitter_client.eoinahern.ie.twitter_client.ui.twitterfeed
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import dagger.android.AndroidInjection
 import androidx.lifecycle.ViewModelProviders
@@ -33,7 +34,7 @@ class TwitterFeedActivity : AppCompatActivity() {
         initViewModel()
         showLoading()
         setUpSearchView()
-        viewModel.getTwitterFeed()
+        viewModel.getTwitterFeed("")
     }
 
     private fun setUpToolbar() {
@@ -56,15 +57,36 @@ class TwitterFeedActivity : AppCompatActivity() {
                 hideLoading()
                 adapter.updateList(list)
             })
+
+        viewModel.getErrorState().observe(this,
+            Observer<Boolean> {
+                if (it)
+                    showError()
+            })
     }
 
     private fun setUpSearchView() {
         searchView.isSubmitButtonEnabled = true
 
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            android.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                searchView.clearFocus()
+                viewModel.unsubscribe()
+                adapter.deleteFromList()
+                showLoading()
+                viewModel.getTwitterFeed(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
     }
 
-
     private fun showLoading() {
+        hideError()
         recycler.visibility = View.GONE
         loading.visibility = View.VISIBLE
     }
@@ -72,6 +94,21 @@ class TwitterFeedActivity : AppCompatActivity() {
     private fun hideLoading() {
         recycler.visibility = View.VISIBLE
         loading.visibility = View.GONE
+        hideError()
+    }
+
+    private fun showError() {
+        hideLoading()
+        errorTxt.visibility = View.VISIBLE
+    }
+
+    private fun hideError() {
+        errorTxt.visibility = View.GONE
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.unsubscribe()
     }
 
 }
