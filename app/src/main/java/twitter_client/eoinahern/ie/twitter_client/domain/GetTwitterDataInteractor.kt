@@ -9,12 +9,14 @@ import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
 import twitter_client.eoinahern.ie.twitter_client.data.model.User
 import twitter_client.eoinahern.ie.twitter_client.di.PerScreen
 import twitter_client.eoinahern.ie.twitter_client.tools.DEFAULT_SEARCH
-import java.io.BufferedReader
+import twitter_client.eoinahern.ie.twitter_client.tools.DateUtil
 import java.io.InputStreamReader
 import javax.inject.Inject
 
 @PerScreen
-class GetTwitterDataInteractor @Inject constructor(private val twitterApi: TwitterApi) : BaseInteractor<List<Tweet>>() {
+class GetTwitterDataInteractor @Inject constructor(
+    private val twitterApi: TwitterApi, private val dateUtil: DateUtil
+) : BaseInteractor<List<Tweet>>() {
 
     private var searchTerm = "twitter"
     private val nameKey = "name"
@@ -69,7 +71,7 @@ class GetTwitterDataInteractor @Inject constructor(private val twitterApi: Twitt
                         jsonReader.endObject()
                     }
 
-                    val tweet = Tweet(text = textIn, user = userIn)
+                    val tweet = Tweet(text = textIn, user = userIn, datetime = dateUtil.getNowDateString())
                     subscriber.onNext(tweet)
                 }
             } catch (e: Throwable) {

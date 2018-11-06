@@ -73,6 +73,7 @@ dependencies {
 
     implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.1.1'
     implementation 'com.jakewharton.rxbinding:rxbinding-appcompat-v7-kotlin:0.4.0'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
 
 }
 

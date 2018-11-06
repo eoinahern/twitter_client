@@ -2,6 +2,7 @@ package twitter_client.eoinahern.ie.twitter_client
 
 import android.app.Activity
 import android.app.Application
+import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -12,11 +13,11 @@ import javax.inject.Inject
 class TwitterApp : Application(), HasActivityInjector {
 
     @Inject
-    lateinit var activityInjector : DispatchingAndroidInjector<Activity>
+    lateinit var activityInjector: DispatchingAndroidInjector<Activity>
 
     override fun onCreate() {
         super.onCreate()
-
+        AndroidThreeTen.init(this)
         DaggerAppComponent.builder().appModule(AppModule(this)).build().inject(this)
     }
 
