@@ -8,9 +8,13 @@ import javax.inject.Inject
 @PerScreen
 class DateUtil @Inject constructor() {
 
-    private val zoneId: ZoneId = ZoneId.systemDefault()
+    private val zoneId: ZoneId by lazy { ZoneId.systemDefault() }
 
     fun getNowDateString(): String {
         return LocalDateTime.now(zoneId).toString()
+    }
+
+    fun checkIsDataStale(timeSaved: LocalDateTime, minutes: Long): Boolean {
+        return LocalDateTime.now().isAfter(timeSaved.plusMinutes(minutes))
     }
 }

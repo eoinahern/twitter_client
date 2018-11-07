@@ -1,12 +1,17 @@
 package twitter_client.eoinahern.ie.twitter_client.di.module
 
 import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
 import com.google.common.escape.Escaper
 import com.google.common.net.UrlEscapers
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import twitter_client.eoinahern.ie.twitter_client.TwitterApp
+import twitter_client.eoinahern.ie.twitter_client.data.database.TweetDao
+import twitter_client.eoinahern.ie.twitter_client.data.database.TweetDatabase
+import twitter_client.eoinahern.ie.twitter_client.tools.TWITTER_DB
 import java.util.*
 import javax.inject.Singleton
 
@@ -34,5 +39,15 @@ class AppModule constructor(private val app: TwitterApp) {
     @Singleton
     @Provides
     fun getGson(): Gson = Gson()
+
+    @Singleton
+    @Provides
+    fun getDatabase(context: Context): TweetDatabase {
+        return Room.databaseBuilder(context, TweetDatabase::class.java, TWITTER_DB).build()
+    }
+
+    @Singleton
+    @Provides
+    fun getDao(tweetDB: TweetDatabase): TweetDao = tweetDB.getTweetDao()
 
 }

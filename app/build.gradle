@@ -67,6 +67,8 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-extensions:$LIFECYCLE_VERSION"
     kapt "androidx.lifecycle:lifecycle-compiler:$LIFECYCLE_VERSION"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams:$LIFECYCLE_VERSION"
+
 
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'me.zhanghai.android.materialprogressbar:library:1.6.0'

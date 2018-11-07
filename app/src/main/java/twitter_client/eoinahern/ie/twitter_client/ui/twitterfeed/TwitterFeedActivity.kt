@@ -25,6 +25,8 @@ class TwitterFeedActivity : AppCompatActivity() {
 
     private lateinit var viewModel: TwitterFeedViewModel
 
+    private val INNIT_TERM = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -34,7 +36,7 @@ class TwitterFeedActivity : AppCompatActivity() {
         initViewModel()
         showLoading()
         setUpSearchView()
-        viewModel.getTwitterFeed("")
+        viewModel.getTwitterFeed(INNIT_TERM)
     }
 
     private fun setUpToolbar() {
@@ -55,6 +57,7 @@ class TwitterFeedActivity : AppCompatActivity() {
         viewModel.getData().observe(this,
             Observer<List<Tweet>> { list ->
                 hideLoading()
+                println(list.size)
                 adapter.updateList(list)
             })
 
@@ -73,7 +76,7 @@ class TwitterFeedActivity : AppCompatActivity() {
             override fun onQueryTextSubmit(query: String): Boolean {
                 searchView.clearFocus()
                 viewModel.unsubscribe()
-                adapter.deleteFromList()
+                adapter.deleteList()
                 showLoading()
                 viewModel.getTwitterFeed(query)
                 return true

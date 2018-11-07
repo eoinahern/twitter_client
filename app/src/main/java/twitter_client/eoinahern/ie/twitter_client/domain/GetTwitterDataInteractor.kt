@@ -5,12 +5,14 @@ import com.google.gson.stream.JsonToken
 import io.reactivex.Observable
 import okio.BufferedSource
 import twitter_client.eoinahern.ie.twitter_client.data.api.TwitterApi
+import twitter_client.eoinahern.ie.twitter_client.data.database.TweetDao
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
 import twitter_client.eoinahern.ie.twitter_client.data.model.User
 import twitter_client.eoinahern.ie.twitter_client.di.PerScreen
 import twitter_client.eoinahern.ie.twitter_client.tools.DEFAULT_SEARCH
 import twitter_client.eoinahern.ie.twitter_client.tools.DateUtil
 import java.io.InputStreamReader
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @PerScreen
@@ -73,6 +75,7 @@ class GetTwitterDataInteractor @Inject constructor(
 
                     val tweet = Tweet(text = textIn, user = userIn, datetime = dateUtil.getNowDateString())
                     subscriber.onNext(tweet)
+
                 }
             } catch (e: Throwable) {
                 e.printStackTrace()

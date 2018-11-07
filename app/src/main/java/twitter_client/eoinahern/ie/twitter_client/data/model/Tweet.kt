@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import org.threeten.bp.LocalDateTime
 
 
 @Entity
@@ -21,6 +22,6 @@ data class Tweet(
 
 }
 
-fun Tweet.setDateTime(dateTimeIn: String) {
-    this.datetime = dateTimeIn
+fun Tweet.getDateTime(): LocalDateTime {
+    return LocalDateTime.parse(datetime)
 }

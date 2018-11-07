@@ -3,6 +3,7 @@ package twitter_client.eoinahern.ie.twitter_client.ui.twitterfeed
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.tweet_item_layout.*
@@ -12,7 +13,8 @@ import twitter_client.eoinahern.ie.twitter_client.di.PerScreen
 import javax.inject.Inject
 
 @PerScreen
-class TwitterFeedAdapter @Inject constructor() : RecyclerView.Adapter<TwitterFeedAdapter.ViewHolder>() {
+class TwitterFeedAdapter @Inject constructor(private val viewModel: TwitterFeedViewModel) :
+    RecyclerView.Adapter<TwitterFeedAdapter.ViewHolder>() {
 
     private val list: MutableList<Tweet> = mutableListOf()
 
@@ -44,12 +46,18 @@ class TwitterFeedAdapter @Inject constructor() : RecyclerView.Adapter<TwitterFee
         }
     }
 
-    fun deleteFromList() {
+    fun deleteList() {
         val currentSize = itemCount
         list.clear()
         notifyItemRangeRemoved(0, currentSize)
     }
 
+    fun deleteFromStart() {
+        val numStaleItems = viewModel.deleteStaleData(list)
+        val remList = list.filterIndexed { index, _ -> index < numStaleItems }
+        list.removeAll(remList)
+        notifyItemRangeRemoved(0, numStaleItems)
+    }
 
     inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 }

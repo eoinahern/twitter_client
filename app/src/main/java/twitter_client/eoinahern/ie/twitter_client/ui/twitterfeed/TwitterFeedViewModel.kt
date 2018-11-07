@@ -7,14 +7,19 @@ import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import retrofit2.HttpException
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
+import twitter_client.eoinahern.ie.twitter_client.data.model.getDateTime
 import twitter_client.eoinahern.ie.twitter_client.di.PerScreen
 import twitter_client.eoinahern.ie.twitter_client.domain.GetTwitterDataInteractor
+import twitter_client.eoinahern.ie.twitter_client.tools.DateUtil
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 
 
 @PerScreen
-class TwitterFeedViewModel @Inject constructor(private val getTwitterDataInteractor: GetTwitterDataInteractor) :
+class TwitterFeedViewModel @Inject constructor(
+    private val getTwitterDataInteractor: GetTwitterDataInteractor,
+    private val dateUtil: DateUtil
+) :
     ViewModel() {
 
     private val tweetList: MutableLiveData<List<Tweet>> = MutableLiveData()
@@ -22,6 +27,7 @@ class TwitterFeedViewModel @Inject constructor(private val getTwitterDataInterac
 
     fun getData(): LiveData<List<Tweet>> {
         return tweetList
+
     }
 
     fun getErrorState(): LiveData<Boolean> {
@@ -63,6 +69,8 @@ class TwitterFeedViewModel @Inject constructor(private val getTwitterDataInterac
         })
 
     }
+
+    fun deleteStaleData(list: List<Tweet>): Int = list.count { dateUtil.checkIsDataStale(it.getDateTime(), 1) }
 
     fun unsubscribe() {
         getTwitterDataInteractor.unsubscribe()
