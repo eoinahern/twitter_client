@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_twitter_feed.*
 import twitter_client.eoinahern.ie.twitter_client.R
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
+import twitter_client.eoinahern.ie.twitter_client.data.sharedprefs.SharedPrefsHelper
+import twitter_client.eoinahern.ie.twitter_client.tools.TWEET_TTL_KEY
 import javax.inject.Inject
 
 
@@ -23,9 +25,12 @@ class TwitterFeedActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModelProvider: TwitterFeedViewModelProvider
 
+    @Inject
+    lateinit var sharedPrefs: SharedPrefsHelper
+
     private lateinit var viewModel: TwitterFeedViewModel
 
-    private val INNIT_TERM = ""
+    private val INNITTERM = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -36,7 +41,7 @@ class TwitterFeedActivity : AppCompatActivity() {
         initViewModel()
         showLoading()
         setUpSearchView()
-        viewModel.getTwitterFeed(INNIT_TERM)
+        viewModel.getTwitterFeed(INNITTERM)
     }
 
     private fun setUpToolbar() {
