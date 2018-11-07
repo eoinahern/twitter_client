@@ -15,8 +15,8 @@ class SharedPrefsHelper constructor(
         sharedPrefsEdit.putString(key, value).commit()
     }
 
-    fun getLong(key: String): Long? {
-        return sharedPrefs.getLong(key, 0L)
+    fun getLong(key: String): Long {
+        return sharedPrefs.getLong(key, 1L)
     }
 
     fun saveLong(key: String, value: Long) {

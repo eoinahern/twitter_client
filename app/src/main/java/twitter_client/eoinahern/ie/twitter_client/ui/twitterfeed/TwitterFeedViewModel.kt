@@ -8,9 +8,11 @@ import io.reactivex.disposables.Disposable
 import retrofit2.HttpException
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
 import twitter_client.eoinahern.ie.twitter_client.data.model.getDateTime
+import twitter_client.eoinahern.ie.twitter_client.data.sharedprefs.SharedPrefsHelper
 import twitter_client.eoinahern.ie.twitter_client.di.PerScreen
 import twitter_client.eoinahern.ie.twitter_client.domain.GetTwitterDataInteractor
 import twitter_client.eoinahern.ie.twitter_client.tools.DateUtil
+import twitter_client.eoinahern.ie.twitter_client.tools.TWEET_TTL_KEY
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 
@@ -18,7 +20,8 @@ import javax.inject.Inject
 @PerScreen
 class TwitterFeedViewModel @Inject constructor(
     private val getTwitterDataInteractor: GetTwitterDataInteractor,
-    private val dateUtil: DateUtil
+    private val dateUtil: DateUtil,
+    private val sharedPrefsHelper: SharedPrefsHelper
 ) :
     ViewModel() {
 
@@ -70,7 +73,12 @@ class TwitterFeedViewModel @Inject constructor(
 
     }
 
-    fun deleteStaleData(list: List<Tweet>): Int = list.count { dateUtil.checkIsDataStale(it.getDateTime(), 1) }
+    fun deleteStaleData(list: List<Tweet>): Int = list.count {
+        dateUtil.checkIsDataStale(
+            it.getDateTime(),
+            sharedPrefsHelper.getLong(TWEET_TTL_KEY)
+        )
+    }
 
     fun unsubscribe() {
         getTwitterDataInteractor.unsubscribe()
