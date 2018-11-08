@@ -3,8 +3,11 @@ package twitter_client.eoinahern.ie.twitter_client.ui.twitterfeed
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import io.reactivex.Observable
 import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
 import twitter_client.eoinahern.ie.twitter_client.data.model.getDateTime
@@ -34,7 +37,6 @@ class TwitterFeedViewModel @Inject constructor(
     }
 
     fun getTwitterFeed(searchTerm: String) {
-
         getTwitterDataInteractor.setSearchTerm(searchTerm).execute(object : Observer<List<Tweet>> {
             override fun onComplete() {
                 println("complete")
@@ -45,6 +47,15 @@ class TwitterFeedViewModel @Inject constructor(
             }
 
             override fun onNext(t: List<Tweet>) {
+
+                val list = tweetList.value?.toMutableList()
+
+                list?.let {
+                    it.addAll(t)
+                    tweetList.postValue(it)
+                    return
+                }
+
                 tweetList.postValue(t)
             }
 
@@ -68,11 +79,24 @@ class TwitterFeedViewModel @Inject constructor(
         })
     }
 
-    fun deleteStaleData(list: List<Tweet>): Int = list.count {
-        dateUtil.checkIsDataStale(
-            it.getDateTime(),
-            sharedPrefsHelper.getLong(TWEET_TTL_KEY)
-        )
+    fun delete() {
+        Observable.fromCallable {
+
+            val ttl = sharedPrefsHelper.getLong(TWEET_TTL_KEY)
+            var newList = tweetList.value?.toMutableList()
+
+            newList?.removeAll {
+                dateUtil.checkIsDataStale(it.getDateTime(), ttl)
+            }
+
+            newList
+        }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                tweetList.postValue(it)
+            }, {
+                it.printStackTrace()
+            })
     }
 
     fun unsubscribe() {

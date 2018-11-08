@@ -3,6 +3,7 @@ package twitter_client.eoinahern.ie.twitter_client.ui.twitterfeed
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.WorkerThread
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import dagger.android.AndroidInjection
@@ -31,7 +32,7 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
 
     private lateinit var viewModel: TwitterFeedViewModel
 
-    private val INNITTERM = ""
+    private val initTerm = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -43,7 +44,7 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
         initViewModel()
         showLoading()
         setUpSearchView()
-        viewModel.getTwitterFeed(INNITTERM)
+        viewModel.getTwitterFeed(initTerm)
     }
 
 
@@ -122,7 +123,7 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
     }
 
     override fun checkTTLOnTweets() {
-        adapter.deleteFromStart()
+        viewModel.delete()
     }
 
     override fun onDestroy() {

@@ -15,6 +15,10 @@ class DateUtil @Inject constructor() {
     }
 
     fun checkIsDataStale(timeSaved: LocalDateTime, minutes: Long): Boolean {
-        return LocalDateTime.now().isAfter(timeSaved.plusMinutes(minutes))
+
+        var nowTime = LocalDateTime.now(zoneId)
+        var timeSavePlusTTL = timeSaved.plusMinutes(minutes)
+
+        return nowTime.isAfter(timeSavePlusTTL)
     }
 }
