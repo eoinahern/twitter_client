@@ -16,7 +16,6 @@ import twitter_client.eoinahern.ie.twitter_client.tools.TWEET_TTL_KEY
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 
-
 @PerScreen
 class TwitterFeedViewModel @Inject constructor(
     private val getTwitterDataInteractor: GetTwitterDataInteractor,
@@ -28,10 +27,7 @@ class TwitterFeedViewModel @Inject constructor(
     private val tweetList: MutableLiveData<List<Tweet>> = MutableLiveData()
     private val errorState: MutableLiveData<Boolean> = MutableLiveData()
 
-    fun getData(): LiveData<List<Tweet>> {
-        return tweetList
-
-    }
+    fun getData(): LiveData<List<Tweet>> = tweetList
 
     fun getErrorState(): LiveData<Boolean> {
         return errorState
@@ -70,7 +66,6 @@ class TwitterFeedViewModel @Inject constructor(
                 e.printStackTrace()
             }
         })
-
     }
 
     fun deleteStaleData(list: List<Tweet>): Int = list.count {

@@ -14,10 +14,11 @@ import twitter_client.eoinahern.ie.twitter_client.R
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
 import twitter_client.eoinahern.ie.twitter_client.data.sharedprefs.SharedPrefsHelper
 import twitter_client.eoinahern.ie.twitter_client.tools.TWEET_TTL_KEY
+import twitter_client.eoinahern.ie.twitter_client.tools.task.RepeatingTaskExecutor
 import javax.inject.Inject
 
 
-class TwitterFeedActivity : AppCompatActivity() {
+class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
 
     @Inject
     lateinit var adapter: TwitterFeedAdapter
@@ -26,7 +27,7 @@ class TwitterFeedActivity : AppCompatActivity() {
     lateinit var viewModelProvider: TwitterFeedViewModelProvider
 
     @Inject
-    lateinit var sharedPrefs: SharedPrefsHelper
+    lateinit var repeatingTask: RepeatingTaskExecutor
 
     private lateinit var viewModel: TwitterFeedViewModel
 
@@ -37,6 +38,7 @@ class TwitterFeedActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_twitter_feed)
         setUpToolbar()
+        initRepeatingTask()
         initAdapter()
         initViewModel()
         showLoading()
@@ -44,9 +46,15 @@ class TwitterFeedActivity : AppCompatActivity() {
         viewModel.getTwitterFeed(INNITTERM)
     }
 
+
     private fun setUpToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setIcon(R.drawable.ic_twitter)
+    }
+
+    private fun initRepeatingTask() {
+        repeatingTask.setActivityCallback(this)
+        repeatingTask.startRepeatingTask()
     }
 
     private fun initAdapter() {
@@ -62,7 +70,6 @@ class TwitterFeedActivity : AppCompatActivity() {
         viewModel.getData().observe(this,
             Observer<List<Tweet>> { list ->
                 hideLoading()
-                println(list.size)
                 adapter.updateList(list)
             })
 
@@ -114,8 +121,13 @@ class TwitterFeedActivity : AppCompatActivity() {
         errorTxt.visibility = View.GONE
     }
 
+    override fun checkTTLOnTweets() {
+        adapter.deleteFromStart()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+        repeatingTask.clearTask()
         viewModel.unsubscribe()
     }
 
