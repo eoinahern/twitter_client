@@ -11,10 +11,7 @@ import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import twitter_client.eoinahern.ie.twitter_client.TwitterApp
-import twitter_client.eoinahern.ie.twitter_client.data.database.TweetDao
-import twitter_client.eoinahern.ie.twitter_client.data.database.TweetDatabase
 import twitter_client.eoinahern.ie.twitter_client.data.sharedprefs.SharedPrefsHelper
-import twitter_client.eoinahern.ie.twitter_client.tools.TWITTER_DB
 import java.util.*
 import javax.inject.Singleton
 
@@ -43,15 +40,15 @@ class AppModule constructor(private val app: TwitterApp) {
     @Provides
     fun getGson(): Gson = Gson()
 
-    @Singleton
+    /*@Singleton
     @Provides
     fun getDatabase(context: Context): TweetDatabase {
         return Room.databaseBuilder(context, TweetDatabase::class.java, TWITTER_DB).build()
-    }
+    }*/
 
-    @Singleton
+    /*@Singleton
     @Provides
-    fun getDao(tweetDB: TweetDatabase): TweetDao = tweetDB.getTweetDao()
+    fun getDao(tweetDB: TweetDatabase): TweetDao = tweetDB.getTweetDao()*/
 
     @Singleton
     @Provides

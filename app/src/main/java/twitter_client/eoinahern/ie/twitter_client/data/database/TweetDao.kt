@@ -16,8 +16,8 @@ interface TweetDao {
     @Insert
     fun insertTweet(tweet: Tweet)
 
-    @Query("DELETE FROM Tweet WHERE datetime <= :timeToDelete")
-    fun deleteWhere(timeToDelete: String)
+    @Query("DELETE FROM Tweet WHERE  :currentTime >= datetime + :additionalTime")
+    fun deleteWhere(additionalTime: Long, currentTime: Long)
 
     @Query("SELECT * FROM Tweet")
     fun getAll(): LiveData<List<Tweet>>

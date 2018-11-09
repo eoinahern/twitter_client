@@ -1,5 +1,6 @@
 package twitter_client.eoinahern.ie.twitter_client.ui.twitterfeed
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,8 +21,7 @@ import twitter_client.eoinahern.ie.twitter_client.tools.TWEET_TTL_KEY
 import javax.inject.Inject
 
 @PerScreen
-class TwitterFeedAdapter @Inject constructor(
-) :
+class TwitterFeedAdapter @Inject constructor(private val diffutilCallback: TwitterFeedDiffUtil) :
     RecyclerView.Adapter<TwitterFeedAdapter.ViewHolder>() {
 
     private val list: MutableList<Tweet> = mutableListOf()
@@ -39,21 +39,14 @@ class TwitterFeedAdapter @Inject constructor(
         holder.tweetTxt.text = tweet.text
     }
 
+    /*
+    * at the moment just updating the list seems like the best option
+    * DiffUtil causes scrolling to be jerky and duplicate tweets?
+    *
+     */
+
     fun updateList(listIn: List<Tweet>) {
-
-        /*if (list.isEmpty()) {
-            list.addAll(listIn)
-            notifyItemRangeInserted(0, listIn.size)
-            return
-        } else {
-
-            val currentInt = list.size
-            list.addAll(listIn)
-            notifyItemRangeInserted(currentInt, listIn.size)
-        }*/
-        if (list.size > 0)
-            list.clear()
-
+        list.clear()
         list.addAll(listIn)
         notifyDataSetChanged()
     }

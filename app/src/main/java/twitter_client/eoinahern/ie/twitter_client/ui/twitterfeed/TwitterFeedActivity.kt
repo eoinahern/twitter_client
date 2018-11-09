@@ -2,6 +2,10 @@ package twitter_client.eoinahern.ie.twitter_client.ui.twitterfeed
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.annotation.WorkerThread
 import androidx.appcompat.widget.SearchView
@@ -11,6 +15,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_twitter_feed.*
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZoneOffset
 import twitter_client.eoinahern.ie.twitter_client.R
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
 import twitter_client.eoinahern.ie.twitter_client.data.sharedprefs.SharedPrefsHelper
@@ -45,6 +52,9 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
         showLoading()
         setUpSearchView()
         viewModel.getTwitterFeed(initTerm)
+
+        //var nowTime = LocalDateTime.now(ZoneId.systemDefault())
+        //Log.d("epoch second", nowTime.toEpochSecond(ZoneOffset.UTC).toString())
     }
 
 
@@ -87,10 +97,10 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
+                showLoading()
                 searchView.clearFocus()
                 viewModel.unsubscribe()
-                adapter.deleteList()
-                showLoading()
+                viewModel.clearTweetList()
                 viewModel.getTwitterFeed(query)
                 return true
             }
@@ -99,6 +109,26 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
                 return false
             }
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.time_to_live_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.one_minute -> {
+                viewModel.setTTLTime(1L)
+                return true
+            }
+            R.id.two_minutes -> {
+                viewModel.setTTLTime(2L)
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun showLoading() {

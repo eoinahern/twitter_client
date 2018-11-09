@@ -1,5 +1,6 @@
 package twitter_client.eoinahern.ie.twitter_client.tools
 
+import android.util.Log
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import twitter_client.eoinahern.ie.twitter_client.di.PerScreen
@@ -15,9 +16,8 @@ class DateUtil @Inject constructor() {
     }
 
     fun checkIsDataStale(timeSaved: LocalDateTime, minutes: Long): Boolean {
-
-        var nowTime = LocalDateTime.now(zoneId)
-        var timeSavePlusTTL = timeSaved.plusMinutes(minutes)
+        val nowTime = LocalDateTime.now(zoneId)
+        val timeSavePlusTTL = timeSaved.plusMinutes(minutes)
 
         return nowTime.isAfter(timeSavePlusTTL)
     }

@@ -5,14 +5,12 @@ import com.google.gson.stream.JsonToken
 import io.reactivex.Observable
 import okio.BufferedSource
 import twitter_client.eoinahern.ie.twitter_client.data.api.TwitterApi
-import twitter_client.eoinahern.ie.twitter_client.data.database.TweetDao
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
 import twitter_client.eoinahern.ie.twitter_client.data.model.User
 import twitter_client.eoinahern.ie.twitter_client.di.PerScreen
 import twitter_client.eoinahern.ie.twitter_client.tools.DEFAULT_SEARCH
 import twitter_client.eoinahern.ie.twitter_client.tools.DateUtil
 import java.io.InputStreamReader
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @PerScreen
@@ -22,6 +20,7 @@ class GetTwitterDataInteractor @Inject constructor(
 
     private var searchTerm = "twitter"
     private val nameKey = "name"
+    private val idKey = "id_str"
     private val textKey = "text"
     private val userKey = "user"
 
@@ -48,6 +47,7 @@ class GetTwitterDataInteractor @Inject constructor(
                 val jsonReader = JsonReader(InputStreamReader(buffSource.inputStream(), "UTF-8"))
                 jsonReader.isLenient = true
                 var textIn = ""
+                var idStrIn = ""
                 var userIn = User("")
 
                 while (!buffSource.exhausted()) {
@@ -63,6 +63,7 @@ class GetTwitterDataInteractor @Inject constructor(
                         val name = jsonReader.nextName()
 
                         when (name) {
+                            idKey -> idStrIn = jsonReader.nextString()
                             textKey -> textIn = jsonReader.nextString()
                             userKey -> userIn = createUser(jsonReader)
                             else -> jsonReader.skipValue()
@@ -73,7 +74,8 @@ class GetTwitterDataInteractor @Inject constructor(
                         jsonReader.endObject()
                     }
 
-                    val tweet = Tweet(text = textIn, user = userIn, datetime = dateUtil.getNowDateString())
+                    val tweet =
+                        Tweet(id_str = idStrIn, text = textIn, user = userIn, datetime = dateUtil.getNowDateString())
                     subscriber.onNext(tweet)
 
                 }

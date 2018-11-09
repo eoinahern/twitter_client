@@ -62,17 +62,28 @@ class TwitterFeedViewModel @Inject constructor(
                 }
 
                 if (e is SocketTimeoutException) {
-
                 }
 
                 errorState.postValue(true)
-                println(e.message)
-                println(e.cause)
-                println(e.localizedMessage)
-                e.printStackTrace()
             }
         })
     }
+
+    fun clearTweetList() {
+        dataList.clear()
+    }
+
+    fun setTTLTime(ttl: Long) {
+        sharedPrefsHelper.saveLong(TWEET_TTL_KEY, ttl)
+    }
+
+    /**
+     * could potentially use ReactiveStreams on DB
+     * with linux timestamp. run DELETE query on against
+     * current timestamp
+     * TODO: wrap in interactor
+     */
+
 
     fun delete() {
         Observable.fromCallable {
