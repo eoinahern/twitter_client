@@ -40,16 +40,6 @@ class AppModule constructor(private val app: TwitterApp) {
     @Provides
     fun getGson(): Gson = Gson()
 
-    /*@Singleton
-    @Provides
-    fun getDatabase(context: Context): TweetDatabase {
-        return Room.databaseBuilder(context, TweetDatabase::class.java, TWITTER_DB).build()
-    }*/
-
-    /*@Singleton
-    @Provides
-    fun getDao(tweetDB: TweetDatabase): TweetDao = tweetDB.getTweetDao()*/
-
     @Singleton
     @Provides
     fun getSharedPrefs(context: Context): SharedPreferences {

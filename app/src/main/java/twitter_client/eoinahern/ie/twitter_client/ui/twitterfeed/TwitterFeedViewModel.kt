@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.Observable
+
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_twitter_feed.view.*
-import retrofit2.HttpException
+
 import twitter_client.eoinahern.ie.twitter_client.R
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
 import twitter_client.eoinahern.ie.twitter_client.data.model.getDateTime
@@ -44,7 +44,6 @@ class TwitterFeedViewModel @Inject constructor(
     fun getTwitterFeed(searchTerm: String) {
         getTwitterDataInteractor.setSearchTerm(searchTerm).execute(object : Observer<List<Tweet>> {
             override fun onComplete() {
-                println("complete")
             }
 
             override fun onSubscribe(d: Disposable) {
@@ -72,6 +71,7 @@ class TwitterFeedViewModel @Inject constructor(
 
     fun clearTweetList() {
         dataList.clear()
+        tweetList.postValue(dataList)
     }
 
     fun setTTLTime(ttl: Long) {
@@ -82,11 +82,11 @@ class TwitterFeedViewModel @Inject constructor(
      * could potentially use ReactiveStreams on DB
      * with linux timestamp. run DELETE query against
      * current timestamp
-     * TODO: wrap in interactor
+     *
      */
 
-
     fun delete() {
+
         Observable.fromCallable {
 
             val ttl = sharedPrefsHelper.getLong(TWEET_TTL_KEY)
@@ -99,7 +99,7 @@ class TwitterFeedViewModel @Inject constructor(
             .subscribe({
                 tweetList.postValue(it)
             }, {
-                it.printStackTrace()
+                //do nothing
             })
     }
 

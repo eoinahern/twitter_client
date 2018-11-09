@@ -54,7 +54,6 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
         viewModel.getTwitterFeed(initTerm)
     }
 
-
     private fun setUpToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setIcon(R.drawable.ic_twitter)
@@ -77,8 +76,10 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
 
         viewModel.getData().observe(this,
             Observer<List<Tweet>> { list ->
-                hideLoading()
-                adapter.updateList(list)
+                if (!list.isEmpty()) {
+                    hideLoading()
+                    adapter.updateList(list)
+                }
             })
 
         viewModel.getErrorState().observe(this,
@@ -96,8 +97,8 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
             override fun onQueryTextSubmit(query: String): Boolean {
                 showLoading()
                 searchView.clearFocus()
-                viewModel.unsubscribe()
                 viewModel.clearTweetList()
+                viewModel.unsubscribe()
                 viewModel.getTwitterFeed(query)
                 return true
             }
@@ -141,7 +142,8 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
     }
 
     private fun showError() {
-        hideLoading()
+        recycler.visibility = View.GONE
+        loading.visibility = View.GONE
         errorTxt.visibility = View.VISIBLE
     }
 
