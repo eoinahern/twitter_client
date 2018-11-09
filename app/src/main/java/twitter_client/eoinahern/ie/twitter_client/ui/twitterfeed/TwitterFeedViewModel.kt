@@ -29,6 +29,7 @@ class TwitterFeedViewModel @Inject constructor(
 
     private val tweetList: MutableLiveData<List<Tweet>> = MutableLiveData()
     private val errorState: MutableLiveData<Boolean> = MutableLiveData()
+    private val dataList: MutableList<Tweet> = mutableListOf()
 
     fun getData(): LiveData<List<Tweet>> = tweetList
 
@@ -47,16 +48,10 @@ class TwitterFeedViewModel @Inject constructor(
             }
 
             override fun onNext(t: List<Tweet>) {
-
-                val list = tweetList.value?.toMutableList()
-
-                list?.let {
+                dataList.let {
                     it.addAll(t)
                     tweetList.postValue(it)
-                    return
                 }
-
-                tweetList.postValue(t)
             }
 
             override fun onError(e: Throwable) {
@@ -83,13 +78,10 @@ class TwitterFeedViewModel @Inject constructor(
         Observable.fromCallable {
 
             val ttl = sharedPrefsHelper.getLong(TWEET_TTL_KEY)
-            var newList = tweetList.value?.toMutableList()
-
-            newList?.removeAll {
+            dataList.removeAll {
                 dateUtil.checkIsDataStale(it.getDateTime(), ttl)
             }
-
-            newList
+            dataList
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
