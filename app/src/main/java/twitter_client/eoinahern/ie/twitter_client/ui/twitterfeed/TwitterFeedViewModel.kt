@@ -8,7 +8,9 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_twitter_feed.view.*
 import retrofit2.HttpException
+import twitter_client.eoinahern.ie.twitter_client.R
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
 import twitter_client.eoinahern.ie.twitter_client.data.model.getDateTime
 import twitter_client.eoinahern.ie.twitter_client.data.sharedprefs.SharedPrefsHelper
@@ -16,6 +18,7 @@ import twitter_client.eoinahern.ie.twitter_client.di.PerScreen
 import twitter_client.eoinahern.ie.twitter_client.domain.GetTwitterDataInteractor
 import twitter_client.eoinahern.ie.twitter_client.tools.DateUtil
 import twitter_client.eoinahern.ie.twitter_client.tools.TWEET_TTL_KEY
+import twitter_client.eoinahern.ie.twitter_client.tools.resources.ResourceProvider
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 
@@ -23,17 +26,18 @@ import javax.inject.Inject
 class TwitterFeedViewModel @Inject constructor(
     private val getTwitterDataInteractor: GetTwitterDataInteractor,
     private val dateUtil: DateUtil,
-    private val sharedPrefsHelper: SharedPrefsHelper
+    private val sharedPrefsHelper: SharedPrefsHelper,
+    private val resourceProvider: ResourceProvider
 ) :
     ViewModel() {
 
     private val tweetList: MutableLiveData<List<Tweet>> = MutableLiveData()
-    private val errorState: MutableLiveData<Boolean> = MutableLiveData()
+    private val errorState: MutableLiveData<String> = MutableLiveData()
     private val dataList: MutableList<Tweet> = mutableListOf()
 
     fun getData(): LiveData<List<Tweet>> = tweetList
 
-    fun getErrorState(): LiveData<Boolean> {
+    fun getErrorState(): LiveData<String> {
         return errorState
     }
 
@@ -56,15 +60,12 @@ class TwitterFeedViewModel @Inject constructor(
 
             override fun onError(e: Throwable) {
 
-                if (e is HttpException) {
-                    println(e.message())
-                    println(e.code())
-                }
-
                 if (e is SocketTimeoutException) {
+                    errorState.postValue(resourceProvider.getString(R.string.no_data_found))
+                    return
                 }
 
-                errorState.postValue(true)
+                errorState.postValue(resourceProvider.getString(R.string.error_loading))
             }
         })
     }
@@ -79,7 +80,7 @@ class TwitterFeedViewModel @Inject constructor(
 
     /**
      * could potentially use ReactiveStreams on DB
-     * with linux timestamp. run DELETE query on against
+     * with linux timestamp. run DELETE query against
      * current timestamp
      * TODO: wrap in interactor
      */

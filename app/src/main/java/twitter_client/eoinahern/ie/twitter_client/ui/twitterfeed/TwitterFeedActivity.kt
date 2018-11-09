@@ -52,9 +52,6 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
         showLoading()
         setUpSearchView()
         viewModel.getTwitterFeed(initTerm)
-
-        //var nowTime = LocalDateTime.now(ZoneId.systemDefault())
-        //Log.d("epoch second", nowTime.toEpochSecond(ZoneOffset.UTC).toString())
     }
 
 
@@ -85,9 +82,9 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
             })
 
         viewModel.getErrorState().observe(this,
-            Observer<Boolean> {
-                if (it)
-                    showError()
+            Observer<String> {
+                showError()
+                errorTxt.text = it
             })
     }
 

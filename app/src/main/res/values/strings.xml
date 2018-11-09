@@ -2,7 +2,8 @@
     <string name="app_name">Twitter_Client</string>
     <string name="loading_txt">loading!</string>
     <string name="enter_term">enter search term</string>
-    <string name="error_loading">error loading!</string>
+    <string name="error_loading">error loading tweets! check network connection</string>
     <string name="one_minute_title">1 minute</string>
     <string name="two_minutes_title">2 minutes</string>
+    <string name="no_data_found">term not found! please try again.</string>
 </resources>
