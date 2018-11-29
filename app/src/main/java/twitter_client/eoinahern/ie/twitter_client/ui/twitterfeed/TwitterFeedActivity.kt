@@ -2,12 +2,10 @@ package twitter_client.eoinahern.ie.twitter_client.ui.twitterfeed
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.annotation.WorkerThread
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import dagger.android.AndroidInjection
@@ -15,13 +13,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_twitter_feed.*
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZoneOffset
 import twitter_client.eoinahern.ie.twitter_client.R
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
-import twitter_client.eoinahern.ie.twitter_client.data.sharedprefs.SharedPrefsHelper
-import twitter_client.eoinahern.ie.twitter_client.tools.TWEET_TTL_KEY
 import twitter_client.eoinahern.ie.twitter_client.tools.task.RepeatingTaskExecutor
 import javax.inject.Inject
 
