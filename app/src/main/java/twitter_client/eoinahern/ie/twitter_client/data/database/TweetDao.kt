@@ -15,4 +15,8 @@ interface TweetDao {
 
     @Query("DELETE FROM Tweet")
     fun deleteAll()
+
+
+    @Query("DELETE FROM Tweet WHERE datetime + :duration < :currentTime")
+    fun deleteSubsetTweets(duration : Long, currentTime :Long)
 }

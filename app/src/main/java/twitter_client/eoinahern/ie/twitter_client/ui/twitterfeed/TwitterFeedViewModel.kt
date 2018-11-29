@@ -86,6 +86,12 @@ class TwitterFeedViewModel @Inject constructor(
 
     fun delete() {
 
+        Observable.fromCallable {
+            tweetDao.deleteSubsetTweets(sharedPrefsHelper.getLong(TWEET_TTL_KEY), dateUtil.getLinuxTimeNow())
+        }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
+
         /*Observable.fromCallable {
 
             val ttl = sharedPrefsHelper.getLong(TWEET_TTL_KEY)

@@ -17,9 +17,9 @@ data class Tweet(
     @SerializedName("user")
     @Embedded
     val user: User,
-    var datetime: String = ""
+    var datetime: Long
 )
 
-fun Tweet.getDateTime(): LocalDateTime {
+/*fun Tweet.getDateTime(): LocalDateTime {
     return LocalDateTime.parse(datetime)
-}
+}*/

@@ -79,7 +79,7 @@ class GetTwitterDataInteractor @Inject constructor(
                     }
 
                     val tweet =
-                        Tweet(id_str = idStrIn, text = textIn, user = userIn, datetime = dateUtil.getNowDateString())
+                        Tweet(id_str = idStrIn, text = textIn, user = userIn, datetime = dateUtil.getLinuxTimeNow())
                     subscriber.onNext(tweet)
 
                 }

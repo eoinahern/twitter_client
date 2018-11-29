@@ -53,8 +53,8 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
     }
 
     private fun initRepeatingTask() {
-        //repeatingTask.setActivityCallback(this)
-        //repeatingTask.startRepeatingTask()
+        repeatingTask.setActivityCallback(this)
+        repeatingTask.startRepeatingTask()
     }
 
     private fun initAdapter() {
@@ -149,7 +149,7 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
 
     override fun onDestroy() {
         super.onDestroy()
-        //repeatingTask.clearTask()
+        repeatingTask.clearTask()
         viewModel.unsubscribe()
     }
 
