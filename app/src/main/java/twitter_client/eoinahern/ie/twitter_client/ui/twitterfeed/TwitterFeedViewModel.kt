@@ -68,11 +68,6 @@ class TwitterFeedViewModel @Inject constructor(
         })
     }
 
-    /*fun clearTweetList() {
-        dataList.clear()
-        tweetList.postValue(dataList)
-    }*/
-
     fun setTTLTime(ttl: Long) {
         sharedPrefsHelper.saveLong(TWEET_TTL_KEY, ttl)
     }
@@ -91,21 +86,6 @@ class TwitterFeedViewModel @Inject constructor(
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe()
-
-        /*Observable.fromCallable {
-
-            val ttl = sharedPrefsHelper.getLong(TWEET_TTL_KEY)
-            dataList.removeAll {
-                dateUtil.checkIsDataStale(it.getDateTime(), ttl)
-            }
-            dataList
-        }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                tweetList.postValue(it)
-            }, {
-                //do nothing
-            })*/
     }
 
 
