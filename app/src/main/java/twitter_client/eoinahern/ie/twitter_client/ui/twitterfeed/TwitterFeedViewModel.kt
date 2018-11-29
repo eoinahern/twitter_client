@@ -1,6 +1,7 @@
 package twitter_client.eoinahern.ie.twitter_client.ui.twitterfeed
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.Observable
@@ -11,8 +12,8 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 import twitter_client.eoinahern.ie.twitter_client.R
+import twitter_client.eoinahern.ie.twitter_client.data.database.TweetDao
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
-import twitter_client.eoinahern.ie.twitter_client.data.model.getDateTime
 import twitter_client.eoinahern.ie.twitter_client.data.sharedprefs.SharedPrefsHelper
 import twitter_client.eoinahern.ie.twitter_client.di.PerScreen
 import twitter_client.eoinahern.ie.twitter_client.domain.GetTwitterDataInteractor
@@ -26,23 +27,25 @@ import javax.inject.Inject
 class TwitterFeedViewModel @Inject constructor(
     private val getTwitterDataInteractor: GetTwitterDataInteractor,
     private val dateUtil: DateUtil,
+    private val tweetDao: TweetDao,
     private val sharedPrefsHelper: SharedPrefsHelper,
     private val resourceProvider: ResourceProvider
 ) :
     ViewModel() {
 
-    private val tweetList: MutableLiveData<List<Tweet>> = MutableLiveData()
     private val errorState: MutableLiveData<String> = MutableLiveData()
-    private val dataList: MutableList<Tweet> = mutableListOf()
 
-    fun getData(): LiveData<List<Tweet>> = tweetList
+
+    fun getCachedData(): LiveData<List<Tweet>> {
+        return LiveDataReactiveStreams.fromPublisher(tweetDao.getAllTweets())
+    }
 
     fun getErrorState(): LiveData<String> {
         return errorState
     }
 
     fun getTwitterFeed(searchTerm: String) {
-        getTwitterDataInteractor.setSearchTerm(searchTerm).execute(object : Observer<List<Tweet>> {
+        getTwitterDataInteractor.setSearchTerm(searchTerm).execute(object : Observer<Unit> {
             override fun onComplete() {
             }
 
@@ -50,11 +53,7 @@ class TwitterFeedViewModel @Inject constructor(
                 getTwitterDataInteractor.addDisposable(d)
             }
 
-            override fun onNext(t: List<Tweet>) {
-                dataList.let {
-                    it.addAll(t)
-                    tweetList.postValue(it)
-                }
+            override fun onNext(t: Unit) {
             }
 
             override fun onError(e: Throwable) {
@@ -69,10 +68,10 @@ class TwitterFeedViewModel @Inject constructor(
         })
     }
 
-    fun clearTweetList() {
+    /*fun clearTweetList() {
         dataList.clear()
         tweetList.postValue(dataList)
-    }
+    }*/
 
     fun setTTLTime(ttl: Long) {
         sharedPrefsHelper.saveLong(TWEET_TTL_KEY, ttl)
@@ -87,7 +86,7 @@ class TwitterFeedViewModel @Inject constructor(
 
     fun delete() {
 
-        Observable.fromCallable {
+        /*Observable.fromCallable {
 
             val ttl = sharedPrefsHelper.getLong(TWEET_TTL_KEY)
             dataList.removeAll {
@@ -100,10 +99,21 @@ class TwitterFeedViewModel @Inject constructor(
                 tweetList.postValue(it)
             }, {
                 //do nothing
-            })
+            })*/
+    }
+
+
+    private fun deleteAll() {
+
+        Observable.fromCallable {
+            tweetDao.deleteAll()
+        }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
     }
 
     fun unsubscribe() {
+        deleteAll()
         getTwitterDataInteractor.unsubscribe()
     }
 }

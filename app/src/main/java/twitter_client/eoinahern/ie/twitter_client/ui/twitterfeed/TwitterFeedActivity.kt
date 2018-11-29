@@ -53,8 +53,8 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
     }
 
     private fun initRepeatingTask() {
-        repeatingTask.setActivityCallback(this)
-        repeatingTask.startRepeatingTask()
+        //repeatingTask.setActivityCallback(this)
+        //repeatingTask.startRepeatingTask()
     }
 
     private fun initAdapter() {
@@ -67,7 +67,7 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
         viewModel = ViewModelProviders.of(this, viewModelProvider)
             .get(TwitterFeedViewModel::class.java)
 
-        viewModel.getData().observe(this,
+        viewModel.getCachedData().observe(this,
             Observer<List<Tweet>> { list ->
                 if (!list.isEmpty()) {
                     hideLoading()
@@ -90,7 +90,6 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
             override fun onQueryTextSubmit(query: String): Boolean {
                 showLoading()
                 searchView.clearFocus()
-                viewModel.clearTweetList()
                 viewModel.unsubscribe()
                 viewModel.getTwitterFeed(query)
                 return true
@@ -150,7 +149,7 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
 
     override fun onDestroy() {
         super.onDestroy()
-        repeatingTask.clearTask()
+        //repeatingTask.clearTask()
         viewModel.unsubscribe()
     }
 

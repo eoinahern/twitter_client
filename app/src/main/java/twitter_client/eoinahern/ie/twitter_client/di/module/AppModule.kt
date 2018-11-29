@@ -11,7 +11,10 @@ import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import twitter_client.eoinahern.ie.twitter_client.TwitterApp
+import twitter_client.eoinahern.ie.twitter_client.data.database.TweetDao
+import twitter_client.eoinahern.ie.twitter_client.data.database.TwitterDatabase
 import twitter_client.eoinahern.ie.twitter_client.data.sharedprefs.SharedPrefsHelper
+import twitter_client.eoinahern.ie.twitter_client.tools.TWITTER_DB_KEY
 import java.util.*
 import javax.inject.Singleton
 
@@ -61,4 +64,15 @@ class AppModule constructor(private val app: TwitterApp) {
         return SharedPrefsHelper(sharedPrefs, sharedPrefsEdit)
     }
 
+    @Singleton
+    @Provides
+    fun getDatabase(context: Context): TwitterDatabase {
+        return Room.databaseBuilder(context, TwitterDatabase::class.java, TWITTER_DB_KEY).build()
+    }
+
+    @Singleton
+    @Provides
+    fun getDao(twitterDatabase: TwitterDatabase): TweetDao {
+        return twitterDatabase.getTweetDao()
+    }
 }

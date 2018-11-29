@@ -5,18 +5,22 @@ import com.google.gson.stream.JsonToken
 import io.reactivex.Observable
 import okio.BufferedSource
 import twitter_client.eoinahern.ie.twitter_client.data.api.TwitterApi
+import twitter_client.eoinahern.ie.twitter_client.data.database.TweetDao
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
 import twitter_client.eoinahern.ie.twitter_client.data.model.User
 import twitter_client.eoinahern.ie.twitter_client.di.PerScreen
 import twitter_client.eoinahern.ie.twitter_client.tools.DEFAULT_SEARCH
 import twitter_client.eoinahern.ie.twitter_client.tools.DateUtil
 import java.io.InputStreamReader
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @PerScreen
 class GetTwitterDataInteractor @Inject constructor(
-    private val twitterApi: TwitterApi, private val dateUtil: DateUtil
-) : BaseInteractor<List<Tweet>>() {
+    private val twitterApi: TwitterApi,
+    private val dateUtil: DateUtil,
+    private val tweetDao: TweetDao
+) : BaseInteractor<Unit>() {
 
     private var searchTerm = "twitter"
     private val nameKey = "name"
@@ -29,7 +33,7 @@ class GetTwitterDataInteractor @Inject constructor(
         return this
     }
 
-    override fun buildObservable(): Observable<List<Tweet>> {
+    override fun buildObservable(): Observable<Unit> {
 
         if (searchTerm.isBlank())
             searchTerm = DEFAULT_SEARCH
@@ -39,7 +43,7 @@ class GetTwitterDataInteractor @Inject constructor(
         }
     }
 
-    private fun events(buffSource: BufferedSource): Observable<List<Tweet>> {
+    private fun events(buffSource: BufferedSource): Observable<Unit> {
 
         return Observable.create<Tweet> { subscriber ->
             try {
@@ -88,7 +92,12 @@ class GetTwitterDataInteractor @Inject constructor(
 
             if (!subscriber.isDisposed)
                 subscriber.onComplete()
-        }.buffer(5)
+        }
+            .buffer(5)
+            .delay(2, TimeUnit.SECONDS)
+            .map {
+                tweetDao.addTweets(it)
+            }
     }
 
     private fun createUser(jsonReader: JsonReader): User {
