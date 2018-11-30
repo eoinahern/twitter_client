@@ -22,6 +22,13 @@ abstract class BaseInteractor<T> {
             .subscribe(obs)
     }
 
+    fun execute() {
+        buildObservable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
+    }
+
     fun addDisposable(d: Disposable) {
         compositeDisposable.add(d)
     }

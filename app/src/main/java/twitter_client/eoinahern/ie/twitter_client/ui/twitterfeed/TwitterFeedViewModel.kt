@@ -16,6 +16,8 @@ import twitter_client.eoinahern.ie.twitter_client.data.database.TweetDao
 import twitter_client.eoinahern.ie.twitter_client.data.model.Tweet
 import twitter_client.eoinahern.ie.twitter_client.data.sharedprefs.SharedPrefsHelper
 import twitter_client.eoinahern.ie.twitter_client.di.PerScreen
+import twitter_client.eoinahern.ie.twitter_client.domain.DeleteAllTweetsInteractor
+import twitter_client.eoinahern.ie.twitter_client.domain.DeleteExpiredTweetsInteractor
 import twitter_client.eoinahern.ie.twitter_client.domain.GetTwitterDataInteractor
 import twitter_client.eoinahern.ie.twitter_client.tools.DateUtil
 import twitter_client.eoinahern.ie.twitter_client.tools.TWEET_TTL_KEY
@@ -26,7 +28,8 @@ import javax.inject.Inject
 @PerScreen
 class TwitterFeedViewModel @Inject constructor(
     private val getTwitterDataInteractor: GetTwitterDataInteractor,
-    private val dateUtil: DateUtil,
+    private val deleteAllTweetsInteractor: DeleteAllTweetsInteractor,
+    private val deleteExpiredTweetsInteractor: DeleteExpiredTweetsInteractor,
     private val tweetDao: TweetDao,
     private val sharedPrefsHelper: SharedPrefsHelper,
     private val resourceProvider: ResourceProvider
@@ -79,22 +82,12 @@ class TwitterFeedViewModel @Inject constructor(
      */
 
     fun delete() {
-
-        Observable.fromCallable {
-            tweetDao.deleteSubsetTweets(sharedPrefsHelper.getLong(TWEET_TTL_KEY), dateUtil.getLinuxTimeNow())
-        }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
+        deleteExpiredTweetsInteractor.execute()
     }
 
 
     private fun deleteAll() {
-
-        Observable.fromCallable {
-            tweetDao.deleteAll()
-        }.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
+        deleteAllTweetsInteractor.execute()
     }
 
     fun unsubscribe() {

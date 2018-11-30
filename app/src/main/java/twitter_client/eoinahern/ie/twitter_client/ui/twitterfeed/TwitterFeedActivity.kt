@@ -110,11 +110,11 @@ class TwitterFeedActivity : AppCompatActivity(), TwitterFeedActivityCallback {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.one_minute -> {
-                viewModel.setTTLTime(1L)
+                viewModel.setTTLTime(60L) //1 minute
                 return true
             }
             R.id.two_minutes -> {
-                viewModel.setTTLTime(2L)
+                viewModel.setTTLTime(120L) //2 minutes
                 return true
             }
             else -> super.onOptionsItemSelected(item)
