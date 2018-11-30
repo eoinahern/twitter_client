@@ -74,13 +74,6 @@ class TwitterFeedViewModel @Inject constructor(
         sharedPrefsHelper.saveLong(TWEET_TTL_KEY, ttl)
     }
 
-    /**
-     * could potentially use ReactiveStreams on DB
-     * with linux timestamp. run DELETE query against
-     * current timestamp
-     *
-     */
-
     fun delete() {
         deleteExpiredTweetsInteractor.execute()
     }
