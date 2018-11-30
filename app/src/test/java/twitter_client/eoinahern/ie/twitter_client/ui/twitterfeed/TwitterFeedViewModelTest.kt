@@ -55,9 +55,14 @@ class TwitterFeedViewModelTest {
 
     @Test
     fun delete() {
+        twitterFeedViewModel.delete()
+        Mockito.verify(mockDeleteExpiredTweetsInteractor).execute()
     }
 
     @Test
     fun unsubscribe() {
+        twitterFeedViewModel.unsubscribe()
+        Mockito.verify(mockDeleteAllTweetsInteractor).execute()
+        Mockito.verify(mockGetTwitterDataInteractor).unsubscribe()
     }
 }
