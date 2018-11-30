@@ -4,11 +4,9 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
-import org.threeten.bp.LocalDateTime
 
 @Entity
 data class Tweet(
-
     @PrimaryKey
     @SerializedName("id_str")
     val id_str: String,
@@ -19,7 +17,3 @@ data class Tweet(
     val user: User,
     var datetime: Long
 )
-
-/*fun Tweet.getDateTime(): LocalDateTime {
-    return LocalDateTime.parse(datetime)
-}*/

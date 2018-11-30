@@ -35,7 +35,6 @@ class TwitterFeedViewModel @Inject constructor(
 
     private val errorState: MutableLiveData<String> = MutableLiveData()
 
-
     fun getCachedData(): LiveData<List<Tweet>> {
         return LiveDataReactiveStreams.fromPublisher(tweetDao.getAllTweets())
     }
