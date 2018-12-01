@@ -10,21 +10,21 @@ class RxAnswer {
         fun <T> onNextCompleted(vararg items: T): Answer<T> {
 
             return Answer<T> {
-                val obs = it.getArgument(0) as Observer<T>
+                val obs = it.getArgument(0) as? Observer<T>
 
                 for (item in items) {
-                    obs.onNext(item)
+                    obs?.onNext(item)
                 }
 
-                obs.onComplete()
+                obs?.onComplete()
                 null
             }
         }
 
         fun <T> onError(throwable: Throwable): Answer<T> {
             return Answer<T> {
-                val obs = it.getArgument(0) as Observer<T>
-                obs.onError(throwable)
+                val obs = it.getArgument(0) as? Observer<T>
+                obs?.onError(throwable)
                 null
             }
         }
