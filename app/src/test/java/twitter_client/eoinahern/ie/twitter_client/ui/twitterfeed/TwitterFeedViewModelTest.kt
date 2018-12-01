@@ -15,6 +15,7 @@ import twitter_client.eoinahern.ie.twitter_client.data.sharedprefs.SharedPrefsHe
 import twitter_client.eoinahern.ie.twitter_client.domain.DeleteAllTweetsInteractor
 import twitter_client.eoinahern.ie.twitter_client.domain.DeleteExpiredTweetsInteractor
 import twitter_client.eoinahern.ie.twitter_client.domain.GetTwitterDataInteractor
+import twitter_client.eoinahern.ie.twitter_client.testUtils.RxAnswer
 import twitter_client.eoinahern.ie.twitter_client.tools.resources.ResourceProvider
 import java.net.SocketTimeoutException
 
@@ -87,12 +88,9 @@ class TwitterFeedViewModelTest {
         val term = "hi"
         Mockito.`when`(mockGetTwitterDataInteractor.setSearchTerm(term)).thenReturn(mockGetTwitterDataInteractor)
 
-        Mockito.doAnswer { innvocation ->
-            val obs = innvocation.arguments[0] as Observer<Unit>
-            obs.onError(SocketTimeoutException())
-            obs.onComplete()
-        }.`when`(mockGetTwitterDataInteractor).execute(any())
-
+        Mockito.doAnswer(RxAnswer.onError<Unit>(SocketTimeoutException()))
+            .`when`(mockGetTwitterDataInteractor)
+            .execute(any())
 
         twitterFeedViewModel.getTwitterFeed(term)
         Mockito.verify(mockGetTwitterDataInteractor).setSearchTerm(term)
