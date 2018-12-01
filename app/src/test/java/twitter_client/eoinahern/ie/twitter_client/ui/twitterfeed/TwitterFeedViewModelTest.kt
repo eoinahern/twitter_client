@@ -1,7 +1,6 @@
 package twitter_client.eoinahern.ie.twitter_client.ui.twitterfeed
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import io.reactivex.Observer
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

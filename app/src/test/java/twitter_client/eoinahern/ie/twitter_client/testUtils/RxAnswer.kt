@@ -7,7 +7,7 @@ class RxAnswer {
 
     companion object {
 
-        fun <T> onNext(vararg items: T): Answer<T> {
+        fun <T> onNextCompleted(vararg items: T): Answer<T> {
 
             return Answer<T> {
                 val obs = it.getArgument(0) as Observer<T>
@@ -15,6 +15,8 @@ class RxAnswer {
                 for (item in items) {
                     obs.onNext(item)
                 }
+
+                obs.onComplete()
                 null
             }
         }
