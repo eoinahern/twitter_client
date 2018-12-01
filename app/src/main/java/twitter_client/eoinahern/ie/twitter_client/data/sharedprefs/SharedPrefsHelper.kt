@@ -7,14 +7,6 @@ class SharedPrefsHelper constructor(
     private val sharedPrefsEdit: SharedPreferences.Editor
 ) {
 
-    fun getString(key: String): String? {
-        return sharedPrefs.getString(key, "")
-    }
-
-    fun saveString(key: String, value: String) {
-        sharedPrefsEdit.putString(key, value).commit()
-    }
-
     fun getLong(key: String): Long {
         return sharedPrefs.getLong(key, 1L)
     }

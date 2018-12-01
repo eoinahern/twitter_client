@@ -13,7 +13,7 @@ import android.util.Base64
 
 
 class OauthInterceptor @Inject constructor(
-    private val random: Random, private val urlEscaper: Escaper
+    private val urlEscaper: Escaper
 ) : Interceptor {
 
     private val OAUTH_CONSUMER_KEY = "oauth_consumer_key"

@@ -20,7 +20,7 @@ class DeleteExpiredTweetsInteractorTest {
     @Mock
     lateinit var mockDateUtil: DateUtil
 
-    lateinit var deleteExpiredTweetsInteractor: DeleteExpiredTweetsInteractor
+    private lateinit var deleteExpiredTweetsInteractor: DeleteExpiredTweetsInteractor
 
     @Before
     fun setUp() {

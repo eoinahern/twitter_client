@@ -4,12 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import io.reactivex.Observable
-
 import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 
 import twitter_client.eoinahern.ie.twitter_client.R
 import twitter_client.eoinahern.ie.twitter_client.data.database.TweetDao
@@ -19,7 +15,6 @@ import twitter_client.eoinahern.ie.twitter_client.di.PerScreen
 import twitter_client.eoinahern.ie.twitter_client.domain.DeleteAllTweetsInteractor
 import twitter_client.eoinahern.ie.twitter_client.domain.DeleteExpiredTweetsInteractor
 import twitter_client.eoinahern.ie.twitter_client.domain.GetTwitterDataInteractor
-import twitter_client.eoinahern.ie.twitter_client.tools.DateUtil
 import twitter_client.eoinahern.ie.twitter_client.tools.TWEET_TTL_KEY
 import twitter_client.eoinahern.ie.twitter_client.tools.resources.ResourceProvider
 import java.net.SocketTimeoutException

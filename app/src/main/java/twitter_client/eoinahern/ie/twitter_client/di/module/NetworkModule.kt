@@ -17,15 +17,15 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun getClient(random: Random, escaper: Escaper): OkHttpClient = OkHttpClient.Builder()
-        .addInterceptor(OauthInterceptor(random, escaper))
+    fun getClient(escaper: Escaper): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(OauthInterceptor(escaper))
         .build()
 
     @Singleton
     @Provides
-    fun getApi(random: Random, escaper: Escaper): TwitterApi {
+    fun getApi(escaper: Escaper): TwitterApi {
 
-        var client = OkHttpClient.Builder().addInterceptor(OauthInterceptor(random, escaper)).build()
+        val client = OkHttpClient.Builder().addInterceptor(OauthInterceptor(escaper)).build()
 
         return Retrofit.Builder()
             .client(client)

@@ -12,7 +12,7 @@ class DeleteAllTweetsInteractorTest {
     @Mock
     lateinit var tweetsDao: TweetDao
 
-    lateinit var deleteAllTweetsInteractor: DeleteAllTweetsInteractor
+    private lateinit var deleteAllTweetsInteractor: DeleteAllTweetsInteractor
 
     @Before
     fun setUp() {
