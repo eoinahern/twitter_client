@@ -69,6 +69,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.ext.LIFECYCLE_VERSION"
     kapt "androidx.lifecycle:lifecycle-compiler:$rootProject.ext.LIFECYCLE_VERSION"
     implementation "androidx.lifecycle:lifecycle-reactivestreams:$rootProject.ext.LIFECYCLE_VERSION"
+    testImplementation "androidx.arch.core:core-testing:$rootProject.ext.LIFECYCLE_VERSION"
+
 
 
     implementation "com.google.code.gson:gson:$rootProject.ext.GSON_VERSION"
